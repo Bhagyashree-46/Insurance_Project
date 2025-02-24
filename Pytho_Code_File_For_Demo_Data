@@ -1,0 +1,154 @@
+import pandas as pd
+import numpy as np
+from faker import Faker
+import random
+from datetime import timedelta, datetime
+
+# Initialize Faker
+fake = Faker()
+n = 100000  # Adjust the number of claims if needed for testing
+
+# Set a seed for reproducibility
+Faker.seed(42)
+np.random.seed(42)
+
+# Generate a realistic date given a starting point
+def generate_random_date(start_date, days_range=(0, 365)):
+    return start_date + timedelta(days=random.randint(*days_range))
+
+# Generate filing and closing dates with logical business rules
+def generate_filing_and_closing_dates():
+    filing_date = generate_random_date(datetime(2020, 1, 1), days_range=(0, 1800))  # Random date in 2020-2024
+    closing_date = generate_random_date(filing_date, days_range=(30, 365))  # Processing takes 30 to 365 days
+    return filing_date, closing_date
+
+# Generate synthetic insurance claims data
+data = {
+    'Claim ID': [fake.uuid4() for _ in range(n)],
+    'Fraud Flag': np.random.choice([0, 1], size=n, p=[0.95, 0.05]),
+    'Denial Reason': [],
+    'Customer Satisfaction': np.random.randint(1, 10, size=n),
+    'Premium Amount': np.random.normal(loc=1500, scale=400, size=n).round(2),
+    'Adjuster Team': [random.choice(['Team A', 'Team B', 'Team C', 'Team D']) for _ in range(n)],
+    'Claim Type ID': [random.randint(100, 105) for _ in range(n)],
+    'Incident Type ID': [random.randint(200, 205) for _ in range(n)],
+    'Claim Costs': np.random.normal(loc=10000, scale=5000, size=n).round(2),
+    'Claim Type': [random.choice(['Auto', 'Home', 'Health', 'Life']) for _ in range(n)],
+    'Policy Type': [random.choice(['Individual', 'Family', 'Corporate']) for _ in range(n)],
+    'Policyholder ID': [fake.uuid4() for _ in range(n)],
+    'Policyholder Name': [fake.name() for _ in range(n)],
+    'Policyholder Demographics': [f"{random.choice(['Male', 'Female'])}, {random.randint(18, 70)} years" for _ in range(n)],
+    'Policy Number': [fake.bothify(text='???-#####') for _ in range(n)],
+    'Claim Filing Date': [],
+    'Claim Closed Date': [],
+    'Claim Status': [],
+    'Claim Amount': np.random.normal(loc=12000, scale=4000, size=n).round(2),
+    'Approved Payout Amount': [],
+    'Payout Date': [],
+    'Adjuster ID': [fake.uuid4() for _ in range(n)],
+    'Adjuster Name': [fake.name() for _ in range(n)],
+    'Adjuster Region': [random.choice(['North', 'South', 'East', 'West']) for _ in range(n)],
+    'Processing Time (Days)': [],
+    'Claim Denial Reason': [],
+    'Claim Fraud Flag': np.random.choice([0, 1], size=n, p=[0.95, 0.05]),
+    'Fraud Investigation Status': [],
+    'Customer Satisfaction Score': np.random.randint(1, 10, size=n),
+    'Reserve Amount': np.random.normal(loc=5000, scale=2000, size=n).round(2),
+    'Reserve Adequacy': np.random.choice(['Adequate', 'Inadequate'], size=n, p=[0.85, 0.15]),
+    'Incident Type': [random.choice(['Theft', 'Accident', 'Natural Disaster', 'Health Issue']) for _ in range(n)],
+    'Region': [random.choice(['North', 'South', 'East', 'West']) for _ in range(n)],
+    'Compliance Status': np.random.choice([0, 1], size=n, p=[0.95, 0.05]),
+    'Regulatory Violation Type': [random.choice(['Minor', 'Major', None]) for _ in range(n)],
+    'Claim Submission Method': [random.choice(['Online', 'Agent-Assisted']) for _ in range(n)],
+    'Claim Settlement Method': [random.choice(['Negotiated', 'Litigated']) for _ in range(n)],
+    'Claim Resolution Method': [random.choice(['Settlement', 'Court Ruling']) for _ in range(n)],
+    'Litigation Flag': [],
+    'Number of Documents Submitted': [],
+    'Adjuster Performance Score': np.random.randint(50, 100, size=n),
+    'Processing Queue Time': np.random.randint(1, 30, size=n),
+    'Claim Reopened Flag': [],
+    'Claim Reopened Date': [],
+    'Denial Reversal Flag': np.random.choice([0, 1], size=n, p=[0.98, 0.02]),
+    'High-Value Claim Flag': np.random.choice([0, 1], size=n, p=[0.90, 0.10]),
+    'Investigation Start Date': [],
+    'Investigation End Date': [],
+    'Top 10 Claim Reasons': [random.choice(['Accident', 'Theft', 'Natural Disaster', 'Health Issue']) for _ in range(n)],
+    'Claim Growth Percentage': np.random.uniform(1.01, 1.5, size=n).round(2),
+    'Monthly/Yearly Trends': [random.choice(['Monthly', 'Yearly']) for _ in range(n)],
+    'Claim Adjuster Team': [random.choice(['Team A', 'Team B', 'Team C', 'Team D']) for _ in range(n)],
+    'Claim Sub-Type': [random.choice(['Minor', 'Major']) for _ in range(n)],
+    'Claim Priority Level': [random.choice(['Low', 'Medium', 'High']) for _ in range(n)],
+    'Claim Review Outcome': [random.choice(['Approved', 'Rejected', 'Pending']) for _ in range(n)],
+    'Reinsurance Flag': np.random.choice([0, 1], size=n, p=[0.95, 0.05]),
+    'Co-Payment Amount': np.random.normal(loc=500, scale=100, size=n).round(2),
+    'Excess/Deductible Amount': np.random.normal(loc=200, scale=50, size=n).round(2),
+    'Incident Severity Level': np.random.randint(1, 10, size=n),
+    'Claim Age': [],
+    'Policyholder Contact Method': [random.choice(['Phone', 'Email', 'In-Person']) for _ in range(n)],
+    'Legal Costs': np.random.normal(loc=2000, scale=800, size=n).round(2),
+    'Broker ID': [fake.uuid4() for _ in range(n)],
+    'Broker Name': [fake.name() for _ in range(n)],
+    'Claim Audit Date': [generate_random_date(datetime(2020, 1, 1), (0, 1095)) for _ in range(n)],
+}
+
+# Logic to fill dates, amounts, and other columns
+for i in range(n):
+    filing_date, closing_date = generate_filing_and_closing_dates()
+    data['Claim Filing Date'].append(filing_date)
+    data['Claim Closed Date'].append(closing_date)
+
+    # Set claim status and payout based on business logic
+    if random.random() < 0.1:  # 10% of claims are denied
+        data['Claim Status'].append('Denied')
+        data['Approved Payout Amount'].append(0)
+        data['Claim Denial Reason'].append(random.choice(['Incomplete Documentation', 'Not Covered', 'Late Submission']))
+        data['Denial Reason'].append('Denied due to policy limitations')
+        data['Payout Date'].append(None)
+    elif random.random() < 0.2:  # 20% are still open
+        data['Claim Status'].append('Open')
+        data['Approved Payout Amount'].append(None)
+        data['Payout Date'].append(None)
+        data['Claim Denial Reason'].append(None)
+        data['Denial Reason'].append(None)
+    else:
+        data['Claim Status'].append('Closed')
+        payout_amount = min(data['Claim Amount'][i], random.uniform(0.5 * data['Claim Amount'][i], data['Claim Amount'][i]))
+        data['Approved Payout Amount'].append(payout_amount)
+        data['Payout Date'].append(closing_date)
+        data['Claim Denial Reason'].append(None)
+        data['Denial Reason'].append(None)
+
+    # Litigation and Reopen logic
+    litigation = random.choice([0, 1]) if data['Claim Status'][-1] == 'Closed' and data['Incident Severity Level'][i] >= 7 else 0
+    data['Litigation Flag'].append(litigation)
+
+    reopened_flag = random.choice([0, 1]) if random.random() < 0.1 else 0  # 10% claims reopened
+    data['Claim Reopened Flag'].append(reopened_flag)
+    data['Claim Reopened Date'].append(closing_date if reopened_flag == 1 else None)
+
+    # Number of documents influenced by claim severity and fraud
+    docs_submitted = max(1, data['Incident Severity Level'][i] + random.randint(0, 10))
+    data['Number of Documents Submitted'].append(docs_submitted)
+
+    # Fraud investigation logic
+    if data['Claim Fraud Flag'][i] == 1:
+        fraud_start = filing_date + timedelta(days=random.randint(30, 90))
+        fraud_end = fraud_start + timedelta(days=random.randint(30, 90))
+        data['Fraud Investigation Status'].append('In Progress' if fraud_end > closing_date else 'Completed')
+    else:
+        data['Fraud Investigation Status'].append('Not Investigated')
+        fraud_start, fraud_end = None, None
+    data['Investigation Start Date'].append(fraud_start)
+    data['Investigation End Date'].append(fraud_end)
+
+    # Processing Time and Claim Age calculation
+    data['Processing Time (Days)'].append((closing_date - filing_date).days)
+    data['Claim Age'].append((datetime.now() - filing_date).days)
+
+# Create DataFrame and save to CSV
+df_realistic = pd.DataFrame(data)
+df_realistic.to_csv("Realistic_Insurance_Claims_Data.csv", index=False)
+
+# Code for downloading the file
+from google.colab import files
+files.download("Realistic_Insurance_Claims_Data.csv")
